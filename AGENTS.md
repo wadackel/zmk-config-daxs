@@ -138,7 +138,7 @@ dax6 の keymap から外側の列を落として移植したので、`LCTRL` �
 | Trackball | `zmk-module-runtime-input-processor`（`cormoran_rip`）、CPI は `zmk-dax-modules`（`dax_trackball`） |
 | Gestures | `zmk-dax-modules`（`dax_gesture`） |
 | Combos | `zmk-dax-modules`（`dax_combo`） |
-| Macros | `zmk-feature-runtime-macro`（`cormoran__runtime_macro`） |
+| Macros | `zmk-dax-modules`（`dax_macro`） |
 
 daxial から変えられず、この repo に書くもの:
 
@@ -154,10 +154,9 @@ daxial から変えられず、この repo に書くもの:
 - **`rsr_*` の `tap-ms` は 16 以上にする**（今は全部 20）。`&msc` の内部周期は 16 ms で、それより短いとスクロールが一切出ない。ビルドエラーにはならない。アプリ側で tap を 16 未満にした場合も同じ
 - **`sensor-bindings` を rsr 以外の behavior にしたレイヤーは、Encoders 画面から編集できない**
 - **エンコーダーの割当は書いた瞬間に flash へ保存される。** 試してから取り消す操作は無い
-- **既定値のマクロを増やすなら `CONFIG_ZMK_STUDIO_RPC_TX_BUF_SIZE` も広げる。** シリアルポートを開いているプログラムが無い間、起動時の Studio 通知は送信バッファ（256 バイト）に溜まり、満杯になるとキー入力ごとキーボードが止まる。既定値のマクロ 1 個で通知 2 件（`esc_lang2` で計 108 バイト）
-- **マクロの既定値のスロット番号はビルド時に決まらない。** 既定値が `esc_lang2` だけなら settings reset の直後はスロット 0 に入り、`&esc_lang2_with_layer 4 0` の `0` と合う。既定値を足したあとは Macros 画面で番号を確かめる。ずれると ESC / LANG2 のキーが効かない
-- **保存したことのない既定値のマクロは、アプリの Discard で devicetree の内容に戻る。** flash に記録が無いので、`zmk-dax-modules` の `CONFIG_ZMK_DAX_MACRO_DEFAULTS`（既定で有効、`0379076` 以降）が書き戻す。それより古い revision に戻すと編集が残る
-- combo は `runtime_combo_defaults`（`dax,runtime-combo-defaults`）に、マクロは `cormoran,runtime-macro-default` に書く。`zmk,combos` と `zmk,behavior-macro` のノードは置かない
+- **マクロのスロットは固定。** 既定値は `slot` で置き場所が決まり、`&esc_lang2_with_layer 4 0` の `0` は `esc_lang2` の `slot`。Macros 画面で名前を変えてもスロットは変わらない。既定値を足すときは空いている番号を `slot` に書く
+- **マクロの作成・名前の変更・削除も Save まで RAM にある。** Discard で戻り、保存したことのない既定値も devicetree の内容に戻る。既定値は起動時に書き込まれず、Studio の通知も出さない
+- combo は `runtime_combo_defaults`（`dax,runtime-combo-defaults`）に、マクロは `runtime_macro_defaults`（`dax,runtime-macro-defaults`）に書く。`zmk,combos` と `zmk,behavior-macro` のノードは置かない
 - ジェスチャー 1 つにつき behavior は 1 つ。複数の操作はマクロにして割り当てる
 
 ## ZMK 本体とモジュール
