@@ -20,7 +20,7 @@ nix develop --command just pristine               # west ワークスペース�
 - `build/daxs_L.uf2` - 左手側（peripheral、エンコーダー）
 - `build/settings_reset.uf2` - 設定リセット用
 
-PR と push のたびに GitHub Actions（`.github/workflows/build.yml`）が `build.yaml` の 3 ターゲットをビルドする。書き込みに使うのは手元のビルド。
+PR、main への push、手動実行のたびに GitHub Actions（`.github/workflows/build.yml`）が `build.yaml` の 3 ターゲットをビルドする。workflow は upstream の zmkfirmware/zmk のものを SHA で固定しているが、ビルドされる ZMK は `config/west.yml` が指す cormoran の fork。
 
 - `just pristine` は `zephyr/` を丸ごと消すので、git 管理下の `zephyr/module.yml` も消える。実行後は `git checkout zephyr/module.yml` で戻す
 - `nix flake update` はしない。新しい nixpkgs は `python310` を持たず、zephyr-nix の評価が darwin で失敗する。Zephyr SDK は 0.17.0 固定（Zephyr 4.1 が想定する版）
