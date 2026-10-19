@@ -1,0 +1,120 @@
+#include <dt-bindings/zmk/matrix_transform.h>
+#include <physical_layouts.dtsi>
+
+/ {
+    chosen {
+      zmk,physical-layout = &daxs_physical_layout;
+    };
+
+    // Positions come from the switch centres on the PCBs (17 mm pitch = 100), each half
+    // measured from its own top row. The gap between the halves is arbitrary.
+    daxs_physical_layout: daxs_physical_layout {
+      compatible = "zmk,physical-layout";
+      display-name = "Default";
+      transform = <&default_transform>;
+      kscan = <&kscan0>;
+
+      keys //                    w   h    x    y     rot   rx   ry
+        // Row 0
+        = <&key_physical_attrs 100 100    0   90       0    0    0>  //  0: L Row0-Col0
+        , <&key_physical_attrs 100 100  100   60       0    0    0>  //  1: L Row0-Col1
+        , <&key_physical_attrs 100 100  200    0       0    0    0>  //  2: L Row0-Col2
+        , <&key_physical_attrs 100 100  300    0       0    0    0>  //  3: L Row0-Col3
+        , <&key_physical_attrs 100 100  400    0       0    0    0>  //  4: L Row0-Col4
+        , <&key_physical_attrs 100 100  930    0       0    0    0>  //  5: R Row0-Col0
+        , <&key_physical_attrs 100 100 1030    0       0    0    0>  //  6: R Row0-Col1
+        , <&key_physical_attrs 100 100 1130    0       0    0    0>  //  7: R Row0-Col2
+        , <&key_physical_attrs 100 100 1230   60       0    0    0>  //  8: R Row0-Col3
+        , <&key_physical_attrs 100 100 1330   90       0    0    0>  //  9: R Row0-Col4
+        // Row 1, with the upper key of the right inner column
+        , <&key_physical_attrs 100 100    0  190       0    0    0>  // 10: L Row1-Col0
+        , <&key_physical_attrs 100 100  100  160       0    0    0>  // 11: L Row1-Col1
+        , <&key_physical_attrs 100 100  200  100       0    0    0>  // 12: L Row1-Col2
+        , <&key_physical_attrs 100 100  300  100       0    0    0>  // 13: L Row1-Col3
+        , <&key_physical_attrs 100 100  400  100       0    0    0>  // 14: L Row1-Col4
+        , <&key_physical_attrs 100 100  830  133       0    0    0>  // 15: R Row3-Col0 (inner, upper)
+        , <&key_physical_attrs 100 100  930  100       0    0    0>  // 16: R Row1-Col0
+        , <&key_physical_attrs 100 100 1030  100       0    0    0>  // 17: R Row1-Col1
+        , <&key_physical_attrs 100 100 1130  100       0    0    0>  // 18: R Row1-Col2
+        , <&key_physical_attrs 100 100 1230  160       0    0    0>  // 19: R Row1-Col3
+        , <&key_physical_attrs 100 100 1330  190       0    0    0>  // 20: R Row1-Col4
+        // Row 2, with the left inner key and the lower key of the right inner column
+        , <&key_physical_attrs 100 100    0  290       0    0    0>  // 21: L Row2-Col0
+        , <&key_physical_attrs 100 100  100  260       0    0    0>  // 22: L Row2-Col1
+        , <&key_physical_attrs 100 100  200  200       0    0    0>  // 23: L Row2-Col2
+        , <&key_physical_attrs 100 100  300  200       0    0    0>  // 24: L Row2-Col3
+        , <&key_physical_attrs 100 100  400  200       0    0    0>  // 25: L Row2-Col4
+        , <&key_physical_attrs 100 100  500  233       0    0    0>  // 26: L Row2-Col5 (inner)
+        , <&key_physical_attrs 100 100  830  233       0    0    0>  // 27: R Row3-Col1 (inner, lower)
+        , <&key_physical_attrs 100 100  930  200       0    0    0>  // 28: R Row2-Col0
+        , <&key_physical_attrs 100 100 1030  200       0    0    0>  // 29: R Row2-Col1
+        , <&key_physical_attrs 100 100 1130  200       0    0    0>  // 30: R Row2-Col2
+        , <&key_physical_attrs 100 100 1230  260       0    0    0>  // 31: R Row2-Col3
+        , <&key_physical_attrs 100 100 1330  290       0    0    0>  // 32: R Row2-Col4
+        // Thumb clusters
+        , <&key_physical_attrs 100 100  224  335       0    0    0>  // 33: L Row3-Col2
+        , <&key_physical_attrs 100 100  324  335       0    0    0>  // 34: L Row3-Col3
+        , <&key_physical_attrs 100 100  429  345    1000  479  395>  // 35: L Row3-Col4
+        , <&key_physical_attrs 100 100  530  372    2000  580  422>  // 36: L Row3-Col5
+        , <&key_physical_attrs 100 100  800  372 (-2000)  850  422>  // 37: R Row3-Col2
+        , <&key_physical_attrs 100 100  902  345 (-1000)  952  395>  // 38: R Row3-Col3
+        ;
+    };
+
+    // The right half's inner column is wired as Row3-Col0/Col1, so those two sit in the
+    // rows they are physically next to rather than with the thumbs.
+    default_transform: keymap_transform_0 {
+      compatible = "zmk,matrix-transform";
+      columns = <11>;
+      rows = <4>;
+      map = <
+        RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4)                  RC(0,6) RC(0,7) RC(0,8) RC(0,9) RC(0,10)
+        RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4)          RC(3,6) RC(1,6) RC(1,7) RC(1,8) RC(1,9) RC(1,10)
+        RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5)  RC(3,7) RC(2,6) RC(2,7) RC(2,8) RC(2,9) RC(2,10)
+                        RC(3,2) RC(3,3) RC(3,4) RC(3,5)  RC(3,8) RC(3,9)
+      >;
+    };
+
+    kscan0: kscan {
+      compatible = "zmk,kscan-gpio-matrix";
+      wakeup-source;
+      diode-direction = "col2row";
+      row-gpios
+        = <&xiao_d 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // D1/P0.03 -> Row0
+        , <&xiao_d 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // D2/P0.28 -> Row1
+        , <&xiao_d 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // D3/P0.29 -> Row2
+        , <&xiao_d 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>  // D6/P1.11 -> Row3
+        ;
+    };
+
+    left_encoder: encoder_left {
+      compatible = "alps,ec11";
+      steps = <80>;
+      status = "disabled";
+    };
+
+    sensors: sensors {
+      compatible = "zmk,keymap-sensors";
+      sensors = <&left_encoder>;
+      triggers-per-rotation = <40>;  // steps(80) の整数約数 = 2 pulses/trigger
+    };
+};
+
+// The XIAO's default serial, SPI and I2C buses sit on D6/D7, D8-D10 and D4/D5, all of
+// which this board uses for the matrix, the encoder or the trackball.
+&xiao_serial {
+  status = "disabled";
+};
+
+&xiao_spi {
+  status = "disabled";
+};
+
+&xiao_i2c {
+  status = "disabled";
+};
+
+// Col4, Col5 and the trackball's CS are on the NFC pads (P0.09 / P0.10).
+&uicr {
+  nfct-pins-as-gpios;
+};
