@@ -1,0 +1,15 @@
+file_format: "1"
+id: daxs
+name: daxs
+type: shield
+url: https://github.com/wadackel/zmk-config-daxs
+requires:
+  - xiao_ble
+features:
+  - keys
+  - encoder
+  - pointer
+  - studio
+siblings:
+  - daxs_L
+  - daxs_R

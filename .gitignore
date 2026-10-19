@@ -1,0 +1,25 @@
+# ZMK Local Build Environment
+build/
+.west/
+modules/
+zephyr/*
+!zephyr/module.yml
+zmk/
+zmk-driver-paw3222/
+zmk-rgbled-widget/
+zmk-behavior-runtime-sensor-rotate/
+zmk-feature-custom-settings/
+zmk-module-runtime-input-processor/
+zmk-feature-runtime-combo/
+zmk-feature-runtime-macro/
+zmk-dax-modules/
+bootloader/
+*.uf2
+*.bin
+*.hex
+*.elf
+/.ccache/
+
+# Nix
+result
+result-*

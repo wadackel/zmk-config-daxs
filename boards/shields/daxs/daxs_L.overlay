@@ -1,0 +1,18 @@
+#include "daxs.dtsi"
+
+&kscan0 {
+  col-gpios
+    = <&xiao_d 10 GPIO_ACTIVE_HIGH>  // D10/P1.15 -> Col0
+    , <&xiao_d 9 GPIO_ACTIVE_HIGH>   // D9/P1.14 -> Col1
+    , <&xiao_d 8 GPIO_ACTIVE_HIGH>   // D8/P1.13 -> Col2
+    , <&xiao_d 7 GPIO_ACTIVE_HIGH>   // D7/P1.12 -> Col3
+    , <&gpio0 10 GPIO_ACTIVE_HIGH>   // NFC2/P0.10 -> Col4
+    , <&gpio0 9 GPIO_ACTIVE_HIGH>    // NFC1/P0.09 -> Col5
+    ;
+};
+
+&left_encoder {
+  a-gpios = <&xiao_d 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;  // D5/P0.05/RE_A
+  b-gpios = <&xiao_d 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;  // D0/P0.02/RE_B
+  status = "okay";
+};

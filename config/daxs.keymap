@@ -1,0 +1,259 @@
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 120
+
+#include <behaviors.dtsi>
+#include <behaviors/runtime-sensor-rotate.dtsi>
+#include <behaviors/runtime_macro.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/input_transform.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/pointing.h>
+#include <input/processors.dtsi>
+#include <dt-bindings/dax/gesture.h>
+
+// Ctrl+Alt+Shift+Meta as a single modifier. The keycode itself is a modifier
+// usage, so it lands in the HID modifier byte and a bare tap sends no character.
+#define HYPER LC(LS(LA(LGUI)))
+
+#define ANDROID 1
+#define MOUSE 5
+#define SCROLL 6
+#define NUM 3
+#define MAC_GESTURE 8
+#define GESTURE 9
+
+#include "gestures.dtsi"
+
+// Encoder scroll reaches the host through &msc, which owns its own input-listener.
+// The listener lives in behaviors.dtsi, which the shield overlay is parsed before,
+// so the Android direction flip has to be declared here rather than in the overlay.
+&msc_input_listener {
+    android_encoder_override {
+        layers = <ANDROID>;
+        input-processors
+            = <&zip_scroll_transform (INPUT_TRANSFORM_Y_INVERT)>
+            , <&zip_scroll_scaler 3 5>
+            ;
+    };
+};
+
+&mt {
+    quick-tap-ms = <0>;
+    tapping-term-ms = <160>;
+    flavor = "balanced";
+};
+
+&lt {
+    flavor = "balanced";
+    tapping-term-ms = <160>;
+    quick-tap-ms = <0>;
+};
+
+// Key positions:
+//
+//    0  1  2  3  4              5  6  7  8  9
+//   10 11 12 13 14         15  16 17 18 19 20
+//   21 22 23 24 25  26     27  28 29 30 31 32
+//         33 34 35 36      37 38
+/ {
+    // Compile-time defaults for the runtime combos (`dax_combo`). A slot edited or
+    // deleted from a settings app keeps that stored value, and the layer filter
+    // still looks at the highest active layer only, hence `<0 1>`.
+    runtime_combo_defaults {
+        compatible = "dax,runtime-combo-defaults";
+
+        to_device {
+            slot = <0>;
+            bindings = <&mo 7>;
+            key-positions = <0 25>;
+            layers = <0 1>;
+        };
+
+        kl_scroll {
+            slot = <1>;
+            bindings = <&mo 6>;
+            key-positions = <18 19>;
+            layers = <0 1>;
+        };
+
+        to_device_left {
+            slot = <2>;
+            bindings = <&tog 7>;
+            key-positions = <0 10 21>;
+            layers = <0 1>;
+        };
+
+        to_device_right {
+            slot = <3>;
+            bindings = <&tog 7>;
+            key-positions = <9 20 32>;
+            layers = <0 1>;
+        };
+    };
+
+    // Compile-time default for runtime macro slot 0 (`cormoran__runtime_macro`), so a
+    // settings app can edit it. A default takes the first free slot when it is first
+    // created; with this as the only default that is slot 0 after a settings reset.
+    // `esc_lang2_with_layer` passes that slot number as its tap parameter.
+    esc_lang2 {
+        compatible = "cormoran,runtime-macro-default";
+        bindings = <&macro_tap>, <&kp ESCAPE &kp LANG2>;
+        wait-ms = <15>;
+    };
+
+    // The rsr_* behaviors are compile-time defaults for the encoder. A settings app
+    // overrides them per layer at runtime, and a layer only becomes editable there
+    // when its sensor-bindings resolve to one of them. Every variant sets tap-ms to
+    // 20, including the &kp one: &msc ticks every 16 ms, and an app may reuse a
+    // layer's current tap-ms when it rebinds, so the binding default of 5 would
+    // leave a later &msc silent.
+    behaviors {
+        esc_lang2_with_layer: esc_lang2_with_layer {
+            compatible = "zmk,behavior-hold-tap";
+            display-name = "Layer-Macro";
+            bindings = <&mo>, <&rmacro>;
+            #binding-cells = <2>;
+            tapping-term-ms = <160>;
+            flavor = "balanced";
+        };
+
+        rsr_scroll: rsr_scroll {
+            compatible = "zmk,behavior-runtime-sensor-rotate";
+            #sensor-binding-cells = <0>;
+            tap-ms = <20>;
+            cw-binding = <&msc SCRL_UP>;
+            ccw-binding = <&msc SCRL_DOWN>;
+        };
+
+        rsr_hscroll: rsr_hscroll {
+            compatible = "zmk,behavior-runtime-sensor-rotate";
+            #sensor-binding-cells = <0>;
+            tap-ms = <20>;
+            cw-binding = <&msc SCRL_RIGHT>;
+            ccw-binding = <&msc SCRL_LEFT>;
+        };
+
+        rsr_vol: rsr_vol {
+            compatible = "zmk,behavior-runtime-sensor-rotate";
+            #sensor-binding-cells = <0>;
+            tap-ms = <20>;
+            cw-binding = <&kp C_VOL_DN>;
+            ccw-binding = <&kp C_VOL_UP>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+            bindings = <
+&kp Q   &kp W   &kp E          &kp R                &kp T                                                                           &kp Y   &kp U   &kp I       &kp O     &kp P
+&kp A   &kp S   &kp D          &kp F                &kp G                                                           &kp TAB         &kp H   &kp J   &kp K       &kp L     &lt 5 SEMICOLON
+&kp Z   &kp X   &kp C          &kp V                &kp B                  &kp BACKSPACE                            &kp BACKSPACE   &kp N   &kp M   &kp COMMA   &kp DOT   &kp SLASH
+                &kp LEFT_ALT   &mt LEFT_GUI LANG2   &mt LEFT_SHIFT SPACE   &esc_lang2_with_layer 4 0                &lt 3 ENTER     &lt 2 LANG1
+            >;
+
+            sensor-bindings = <&rsr_scroll>;
+        };
+
+        Android {
+            bindings = <
+&trans   &trans   &trans   &trans            &trans                                  &trans   &trans   &trans   &trans   &trans
+&trans   &trans   &trans   &trans            &trans                         &trans   &trans   &trans   &trans   &trans   &trans
+&trans   &trans   &trans   &trans            &trans   &trans                &trans   &trans   &trans   &trans   &trans   &trans
+                  &trans   &mt HYPER LANG2   &trans   &trans                &trans   &trans
+            >;
+
+            sensor-bindings = <&rsr_scroll>;
+        };
+
+        Symbol {
+            bindings = <
+&kp TILDE         &kp GRAVE       &kp DOLLAR         &kp PERCENT   &kp CARET                                 &trans      &kp AMPERSAND    &kp LEFT_PARENTHESIS   &kp RIGHT_PARENTHESIS   &kp DOUBLE_QUOTES
+&kp EXCLAMATION   &kp AT_SIGN     &kp HASH           &kp EQUAL     &kp PLUS                         &trans   &kp ASTRK   &kp UNDERSCORE   &kp LEFT_BRACKET       &kp RIGHT_BRACKET       &kp COLON
+&kp QUESTION      &kp LESS_THAN   &kp GREATER_THAN   &kp PIPE      &kp BACKSLASH   &trans           &trans   &trans      &trans           &kp LEFT_BRACE         &kp RIGHT_BRACE         &kp SINGLE_QUOTE
+                                  &trans             &trans        &trans          &trans           &trans   &trans
+            >;
+
+            sensor-bindings = <&rsr_hscroll>;
+        };
+
+        Num {
+            bindings = <
+&kp SLASH      &kp N7         &kp N8         &kp N9         &kp MINUS                                  &trans          &trans   &trans   &trans   &trans
+&kp ASTERISK   &kp NUMBER_4   &kp N5         &kp NUMBER_6   &kp PLUS                          &trans   &kp BACKSPACE   &trans   &trans   &trans   &kp COLON
+&kp N0         &kp NUMBER_1   &kp NUMBER_2   &kp NUMBER_3   &kp PERCENT   &trans              &trans   &trans          &trans   &trans   &trans   &trans
+                              &trans         &trans         &trans        &kp PERIOD          &trans   &trans
+            >;
+
+            sensor-bindings = <&rsr_vol>;
+        };
+
+        Function {
+            bindings = <
+&kp LG(LS(NUMBER_4))       &kp F7   &kp F8   &kp F9   &kp LG(SPACE)                                &kp C_MUTE   &kp C_PP   &kp C_VOLUME_DOWN   &kp C_VOLUME_UP   &trans
+&kp LG(LC(LS(NUMBER_4)))   &kp F4   &kp F5   &kp F6   &kp LG(LC(SPACE))                   &trans   &kp LEFT     &kp DOWN   &kp UP_ARROW        &kp RIGHT         &trans
+&kp F10                    &kp F1   &kp F2   &kp F3   &mo 7               &trans          &trans   &trans       &trans     &trans              &trans            &trans
+                                    &trans   &trans   &trans              &trans          &trans   &trans
+            >;
+
+            sensor-bindings = <&rsr_vol>;
+        };
+
+        Mouse {
+            bindings = <
+&trans   &trans   &trans   &trans   &trans                                                 &kp F11                     &kp RG(R)   &mo MAC_GESTURE   &mo GESTURE   &trans
+&trans   &trans   &trans   &trans   &trans                      &trans                     &kp RC(UP_ARROW)            &mkp MB1    &mkp MB3          &mkp MB2      &trans
+&trans   &trans   &trans   &trans   &trans   &trans             &trans                     &kp RC(DOWN)                &mkp MB4    &mkp MB5          &kp RG(W)     &trans
+                  &trans   &trans   &trans   &trans             &kp RG(RS(LEFT_BRACKET))   &kp RG(RS(RIGHT_BRACKET))
+            >;
+
+            sensor-bindings = <&rsr_scroll>;
+        };
+
+        Scroll {
+            bindings = <
+&trans   &trans                     &kp LG(LC(LA(K)))          &kp LG(LC(LA(M)))          &kp LG(LC(LA(C)))                                    &trans            &trans   &trans   &trans   &trans
+&trans   &kp LG(LC(LA(LEFT)))       &kp LC(LA(UP_ARROW))       &kp LG(LC(LA(DOWN)))       &kp LG(LC(LA(RIGHT)))                  &trans        &trans            &trans   &trans   &trans   &trans
+&trans   &kp LG(LC(LA(NUMBER_1)))   &kp LG(LC(LA(NUMBER_2)))   &kp LG(LC(LA(NUMBER_3)))   &kp LG(LC(LA(NUMBER_4)))   &trans      &trans        &trans            &trans   &trans   &trans   &trans
+                                    &trans                     &trans                     &trans                     &trans      &kp LC(TAB)   &kp LC(LS(TAB))
+            >;
+
+            sensor-bindings = <&rsr_scroll>;
+        };
+
+        Device {
+            bindings = <
+&bootloader   &trans   &trans   &trans   &tog 7                                &tog 7         &trans         &trans         &bt BT_CLR     &bt BT_CLR_ALL
+&trans        &trans   &trans   &trans   &trans                  &bootloader   &bt BT_SEL 0   &bt BT_SEL 1   &bt BT_SEL 2   &bt BT_SEL 3   &bt BT_SEL 4
+&trans        &trans   &trans   &trans   &trans   &trans         &trans        &trans         &bt BT_PRV     &bt BT_NXT     &trans         &trans
+                       &trans   &trans   &trans   &trans         &trans        &trans
+            >;
+
+            sensor-bindings = <&rsr_scroll>;
+        };
+
+        // MacGesture and Gesture are held from the Mouse layer. They change no key: they exist
+        // so that the gesture processor has a layer to tell "gestures on" by (gestures.dtsi).
+        MacGesture {
+            bindings = <
+&trans   &trans   &trans   &trans   &trans                         &trans   &trans   &trans   &trans   &trans
+&trans   &trans   &trans   &trans   &trans                &trans   &trans   &trans   &trans   &trans   &trans
+&trans   &trans   &trans   &trans   &trans   &trans       &trans   &trans   &trans   &trans   &trans   &trans
+                  &trans   &trans   &trans   &trans       &trans   &trans
+            >;
+
+            sensor-bindings = <&rsr_scroll>;
+        };
+
+        Gesture {
+            bindings = <
+&trans   &trans   &trans   &trans   &trans                         &trans   &trans   &trans   &trans   &trans
+&trans   &trans   &trans   &trans   &trans                &trans   &trans   &trans   &trans   &trans   &trans
+&trans   &trans   &trans   &trans   &trans   &trans       &trans   &trans   &trans   &trans   &trans   &trans
+                  &trans   &trans   &trans   &trans       &trans   &trans
+            >;
+
+            sensor-bindings = <&rsr_scroll>;
+        };
+    };
+};
