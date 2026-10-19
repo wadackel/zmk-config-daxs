@@ -20,7 +20,7 @@ nix develop --command just pristine               # west ワークスペース�
 - `build/daxs_L.uf2` - 左手側（peripheral、エンコーダー）
 - `build/settings_reset.uf2` - 設定リセット用
 
-CI は無い。ビルドは手元でだけ行う。
+PR と push のたびに GitHub Actions（`.github/workflows/build.yml`）が `build.yaml` の 3 ターゲットをビルドする。書き込みに使うのは手元のビルド。
 
 - `just pristine` は `zephyr/` を丸ごと消すので、git 管理下の `zephyr/module.yml` も消える。実行後は `git checkout zephyr/module.yml` で戻す
 - `nix flake update` はしない。新しい nixpkgs は `python310` を持たず、zephyr-nix の評価が darwin で失敗する。Zephyr SDK は 0.17.0 固定（Zephyr 4.1 が想定する版）
