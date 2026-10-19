@@ -31,7 +31,7 @@ CI は無い。ビルドは手元でだけ行う。
 - `config/` - キーマップ（`daxs.keymap`）、ジェスチャーの既定値（`gestures.dtsi`）、`west.yml`
 - `module/` - 空の CMakeLists.txt / Kconfig。west が Zephyr を `./zephyr` に取得するため、明示しないとこの repo の Zephyr モジュール定義（`zephyr/module.yml`）が Zephyr 本体の `zephyr/CMakeLists.txt` を拾ってしまう
 - `.gitignore` の `zephyr/*` と `!zephyr/module.yml` は組で必要
-- dax 系で共有する自作モジュール（マウスジェスチャー、OS レイヤー、トラックボールの CPI 設定）は [`wadackel/zmk-dax-modules`](https://github.com/wadackel/zmk-dax-modules) にあり、`config/west.yml` から SHA で参照する
+- dax 系で共有する自作モジュール（マウスジェスチャー、OS レイヤー、トラックボールの CPI 設定、実行時 combo）は [`wadackel/zmk-dax-modules`](https://github.com/wadackel/zmk-dax-modules) にあり、`config/west.yml` から SHA で参照する
 
 ## ハードウェア仕様
 
@@ -133,7 +133,7 @@ dax6 の keymap から外側の列を落として移植したので、`LCTRL` �
 | Encoders | `zmk-behavior-runtime-sensor-rotate`（`cormoran_rsr`） |
 | Trackball | `zmk-module-runtime-input-processor`（`cormoran_rip`）、CPI は `zmk-dax-modules`（`dax_trackball`） |
 | Gestures | `zmk-dax-modules`（`dax_gesture`） |
-| Combos | `zmk-feature-runtime-combo`（`cormoran__runtime_combo`） |
+| Combos | `zmk-dax-modules`（`dax_combo`） |
 | Macros | `zmk-feature-runtime-macro`（`cormoran__runtime_macro`） |
 
 daxial から変えられず、この repo に書くもの:
@@ -153,7 +153,7 @@ daxial から変えられず、この repo に書くもの:
 - **既定値のマクロを増やすなら `CONFIG_ZMK_STUDIO_RPC_TX_BUF_SIZE` も広げる。** シリアルポートを開いているプログラムが無い間、起動時の Studio 通知は送信バッファ（256 バイト）に溜まり、満杯になるとキー入力ごとキーボードが止まる。既定値のマクロ 1 個で通知 2 件（`esc_lang2` で計 108 バイト）
 - **マクロの既定値のスロット番号はビルド時に決まらない。** 既定値が `esc_lang2` だけなら settings reset の直後はスロット 0 に入り、`&esc_lang2_with_layer 4 0` の `0` と合う。既定値を足したあとは Macros 画面で番号を確かめる。ずれると ESC / LANG2 のキーが効かない
 - **保存したことのない既定値のマクロは、アプリの Discard で devicetree の内容に戻る。** flash に記録が無いので、`zmk-dax-modules` の `CONFIG_ZMK_DAX_MACRO_DEFAULTS`（既定で有効、`0379076` 以降）が書き戻す。それより古い revision に戻すと編集が残る
-- combo は `runtime_combo_defaults` に、マクロは `cormoran,runtime-macro-default` に書く。`zmk,combos` と `zmk,behavior-macro` のノードは置かない
+- combo は `runtime_combo_defaults`（`dax,runtime-combo-defaults`）に、マクロは `cormoran,runtime-macro-default` に書く。`zmk,combos` と `zmk,behavior-macro` のノードは置かない
 - ジェスチャー 1 つにつき behavior は 1 つ。複数の操作はマクロにして割り当てる
 
 ## ZMK 本体とモジュール

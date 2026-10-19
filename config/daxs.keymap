@@ -55,11 +55,11 @@
 //   21 22 23 24 25  26     27  28 29 30 31 32
 //         33 34 35 36      37 38
 / {
-    // Compile-time defaults for the runtime combos (`cormoran__runtime_combo`). A
-    // slot edited or deleted from a settings app keeps that stored value, and the
-    // layer filter still looks at the highest active layer only, hence `<0 1>`.
+    // Compile-time defaults for the runtime combos (`dax_combo`). A slot edited or
+    // deleted from a settings app keeps that stored value, and the layer filter
+    // still looks at the highest active layer only, hence `<0 1>`.
     runtime_combo_defaults {
-        compatible = "cormoran,runtime-combo-defaults";
+        compatible = "dax,runtime-combo-defaults";
 
         to_device {
             slot = <0>;
