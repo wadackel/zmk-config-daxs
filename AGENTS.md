@@ -155,7 +155,7 @@ daxial から変えられず、この repo に書くもの:
 - **`sensor-bindings` を rsr 以外の behavior にしたレイヤーは、Encoders 画面から編集できない**
 - **エンコーダーの割当は書いた瞬間に flash へ保存される。** 試してから取り消す操作は無い
 - **マクロのスロットは固定。** 既定値は `slot` で置き場所が決まり、`&esc_lang2_with_layer 4 0` の `0` は `esc_lang2` の `slot`。Macros 画面で名前を変えてもスロットは変わらない。既定値を足すときは空いている番号を `slot` に書く
-- **マクロの作成・名前の変更・削除も Save まで RAM にある。** Discard で戻り、保存したことのない既定値も devicetree の内容に戻る。既定値は起動時に書き込まれず、Studio の通知も出さない
+- **マクロの作成・名前の変更・削除も Save まで RAM にある。** Discard で戻り、保存したことのない既定値も devicetree の内容に戻る。既定値のマクロは削除できず、reset で devicetree の内容に戻す。既定値は起動時に書き込まれず、Studio の通知も出さない
 - combo は `runtime_combo_defaults`（`dax,runtime-combo-defaults`）に、マクロは `runtime_macro_defaults`（`dax,runtime-macro-defaults`）に書く。`zmk,combos` と `zmk,behavior-macro` のノードは置かない
 - ジェスチャー 1 つにつき behavior は 1 つ。複数の操作はマクロにして割り当てる
 
