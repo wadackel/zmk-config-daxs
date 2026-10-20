@@ -134,7 +134,7 @@ dax6 の keymap から外側の列を落として移植したので、`LCTRL` �
 | 画面 | 仕組み（custom subsystem の識別子） |
 |---|---|
 | Keymap（キー割当、レイヤー名） | ZMK Studio の RPC |
-| Encoders | `zmk-behavior-runtime-sensor-rotate`（`cormoran_rsr`） |
+| Encoders | `zmk-dax-modules`（`dax_encoder`、値は `dax_settings` 経由） |
 | Trackball | `zmk-dax-modules`（向きと倍率は `dax_pointer`、CPI は `dax_trackball`。値はどちらも `dax_settings` 経由） |
 | Gestures | `zmk-dax-modules`（`dax_gesture`） |
 | Combos | `zmk-dax-modules`（`dax_combo`） |
@@ -151,9 +151,10 @@ daxial から変えられず、この repo に書くもの:
 ### 落とし穴
 
 - **keymap / overlay に書いた値は既定値で、アプリで保存した値が優先される。** 既定値を書き換えてフラッシュしても、保存済みの項目には反映されない。戻すにはアプリの reset か `settings_reset.uf2`（BLE のボンドも消える）
-- **`rsr_*` の `tap-ms` は 16 以上にする**（今は全部 20）。`&msc` の内部周期は 16 ms で、それより短いとスクロールが一切出ない。ビルドエラーにはならない。アプリ側で tap を 16 未満にした場合も同じ
-- **`sensor-bindings` を rsr 以外の behavior にしたレイヤーは、Encoders 画面から編集できない**
-- **エンコーダーの割当は書いた瞬間に flash へ保存される。** 試してから取り消す操作は無い
+- **`dax_enc_*` の `tap-ms` は 16 以上にする**（今は全部 20）。`&msc` の内部周期は 16 ms で、それより短いとスクロールが一切出ない。ビルドエラーにはならない。アプリ側で tap を 16 未満にした場合も同じ
+- **`sensor-bindings` を `dax_enc_*`（`dax,behavior-encoder`）以外の behavior にしたレイヤーは、Encoders 画面から編集できない**
+- **エンコーダーの割当も Save まで RAM にある。** Discard で戻る。スロットは layer id で数える（並べ替えても割当はその層についていく）
+- cormoran の `zmk-behavior-runtime-sensor-rotate` で保存した割当は引き継いでいない。flash に残るが読まれない
 - **マクロのスロットは固定。** 既定値は `slot` で置き場所が決まり、`&esc_lang2_with_layer 4 0` の `0` は `esc_lang2` の `slot`。Macros 画面で名前を変えてもスロットは変わらない。既定値を足すときは空いている番号を `slot` に書く
 - **マクロの作成・名前の変更・削除も Save まで RAM にある。** Discard で戻り、保存したことのない既定値も devicetree の内容に戻る。既定値のマクロは削除できず、reset で devicetree の内容に戻す。既定値は起動時に書き込まれず、Studio の通知も出さない
 - combo は `runtime_combo_defaults`（`dax,runtime-combo-defaults`）に、マクロは `runtime_macro_defaults`（`dax,runtime-macro-defaults`）に書く。`zmk,combos` と `zmk,behavior-macro` のノードは置かない
