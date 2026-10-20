@@ -25,6 +25,10 @@ PR、main への push、手動実行のたびに GitHub Actions（`.github/workf
 - `just pristine` は `zephyr/` を丸ごと消すので、git 管理下の `zephyr/module.yml` も消える。実行後は `git checkout zephyr/module.yml` で戻す
 - `nix flake update` はしない。新しい nixpkgs は `python310` を持たず、zephyr-nix の評価が darwin で失敗する。Zephyr SDK は 0.17.0 固定（Zephyr 4.1 が想定する版）
 
+## 書き込み
+
+右手側（central）は daxial の `pnpm flash <uf2>` で、bootloader キーを押さずに書き込める。キーボードが報告する名前と UF2 のファイル名の先頭が一致しないと何も送らない。再起動だけなら `pnpm flash --restart --keyboard daxs`。どちらも、書き込み済みのファームウェアに `dax_system`（`CONFIG_ZMK_DAX_SYSTEM_RPC`）が入っていることが前提で、シリアルポートを他のプログラムが掴んでいないこと。左手側は Studio を持たないので、従来どおり bootloader に入れて UF2 をコピーする。
+
 ## ディレクトリ構造
 
 - `boards/shields/daxs/` - Shield 定義（dtsi、overlay、conf、Kconfig）
