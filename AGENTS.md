@@ -88,7 +88,7 @@ L に Alps EC12E が 1 個。`steps = <80>`、`triggers-per-rotation = <40>` は
 R に SPI0 + MOTION 割り込みで接続する。ドライバーは生の `INPUT_REL_X` / `INPUT_REL_Y` を出すだけで、向きや倍率は input-processor のチェーンで決める（`daxs_R.overlay` の `trackball_listener`）。
 
 - **base chain**: `<&tb_pointer>, <&dax_gestures>`
-  - `tb_pointer` が向きの補正と倍率を担う（`trackball_processors.dtsi`）。既定の `xy-swap-enabled; x-invert;` は dax6 の値で、daxs のセンサーの向きに合うかは実機で未確認。daxial の Trackball 画面で直せる
+  - `tb_pointer` が向きの補正と倍率を担う（`trackball_processors.dtsi`）。既定の `xy-swap; x-invert;` は dax6 の値で、daxs のセンサーの向きに合うかは実機で未確認。daxial の Trackball 画面で直せる
   - `dax_gestures` がマウスジェスチャーを判定する（`config/gestures.dtsi`）
 - **scroll_override**（Scroll レイヤー = 6、`process-next` 付き）: `<&tb_pointer>, <&zip_xy_to_scroll_mapper>, <&tb_scroll>`
   - `tb_pointer` はここでも先頭にいるので、その倍率はスクロールにも掛かる
@@ -135,7 +135,7 @@ dax6 の keymap から外側の列を落として移植したので、`LCTRL` �
 |---|---|
 | Keymap（キー割当、レイヤー名） | ZMK Studio の RPC |
 | Encoders | `zmk-behavior-runtime-sensor-rotate`（`cormoran_rsr`） |
-| Trackball | `zmk-module-runtime-input-processor`（`cormoran_rip`）、CPI は `zmk-dax-modules`（`dax_trackball`） |
+| Trackball | `zmk-dax-modules`（向きと倍率は `dax_pointer`、CPI は `dax_trackball`。値はどちらも `dax_settings` 経由） |
 | Gestures | `zmk-dax-modules`（`dax_gesture`） |
 | Combos | `zmk-dax-modules`（`dax_combo`） |
 | Macros | `zmk-dax-modules`（`dax_macro`） |
