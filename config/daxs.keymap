@@ -131,6 +131,28 @@
             flavor = "balanced";
         };
 
+        // With Cmd held, the kana key becomes Tab, so holding Cmd and tapping it
+        // walks the macOS app switcher. Cmd+kana does nothing on macOS.
+        kana_tab: kana_tab {
+            compatible = "zmk,behavior-mod-morph";
+            display-name = "Kana / Tab";
+            #binding-cells = <0>;
+            bindings = <&kp LANG1>, <&kp TAB>;
+            mods = <(MOD_LGUI|MOD_RGUI)>;
+            keep-mods = <(MOD_LGUI|MOD_RGUI)>;
+        };
+
+        // The tap parameter is unused: kana_tab takes none.
+        lt_kana_tab: lt_kana_tab {
+            compatible = "zmk,behavior-hold-tap";
+            display-name = "Layer-Kana";
+            bindings = <&mo>, <&kana_tab>;
+            #binding-cells = <2>;
+            tapping-term-ms = <160>;
+            quick-tap-ms = <0>;
+            flavor = "balanced";
+        };
+
         dax_enc_scroll: dax_enc_scroll {
             compatible = "dax,behavior-encoder";
             #sensor-binding-cells = <0>;
@@ -164,7 +186,7 @@
 &kp Q   &kp W   &kp E          &kp R                &kp T                                                                           &kp Y   &kp U   &kp I       &kp O     &kp P
 &kp A   &kp S   &kp D          &kp F                &kp G                                                           &kp TAB         &kp H   &kp J   &kp K       &kp L     &lt 5 SEMICOLON
 &kp Z   &kp X   &kp C          &kp V                &kp B                  &kp BACKSPACE                            &kp BACKSPACE   &kp N   &kp M   &kp COMMA   &kp DOT   &kp SLASH
-                &kp LEFT_ALT   &mt LEFT_GUI LANG2   &mt LEFT_SHIFT SPACE   &esc_lang2_with_layer 4 0                &lt 3 ENTER     &lt 2 LANG1
+                &kp LEFT_ALT   &mt LEFT_GUI LANG2   &mt LEFT_SHIFT SPACE   &esc_lang2_with_layer 4 0                &lt 3 ENTER     &lt_kana_tab 2 0
             >;
 
             sensor-bindings = <&dax_enc_scroll>;
