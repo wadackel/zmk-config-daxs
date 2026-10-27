@@ -124,6 +124,7 @@ Android レイヤーまわりで壊れやすい点:
 - **combo の `layers` は `<0 1>` と書く。** combo のレイヤー絞り込みは最上位のアクティブレイヤー 1 つしか見ない
 - **Android レイヤーは index 1 に置く。** 上に置くと最上位が常に Android になり、combo のレイヤー限定が効かなくなる
 - **レイヤーの出入りは `&tog` / `&mo` で行い、`&to` は使わない。** 常時アクティブな上書きレイヤーを落とす恐れがある（dax6 でも実機未確認）
+- **Android レイヤーの `&kp HYPER` は、default_layer の `LEFT_GUI` と同じ位置に置く。** Android では GUI を単独で押すと検索やアシスタントが起動するので、Ctrl+Opt+Shift+Cmd の同時押しにして潰している。HYPER は位置で決まるので、default_layer で GUI を動かしたら HYPER も一緒に動かす
 
 `LCTRL` は左親指の `&mt LEFT_CONTROL SPACE` にある。
 
