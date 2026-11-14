@@ -131,7 +131,7 @@
         };
 
         // Kept apart from &mt: require-prior-idle-ms would turn the thumb
-        // &mt LEFT_CONTROL SPACE into a space when pressed right after a letter.
+        // &mt LEFT_SHIFT SPACE into a space when pressed right after a letter.
         hrm: home_row_mod {
             compatible = "zmk,behavior-hold-tap";
             display-name = "Home Row Mod";
@@ -200,7 +200,7 @@
 &kp Q              &kp W            &kp E          &kp R         &kp T                                                                    &kp Y              &kp U   &kp I         &kp O     &kp P
 &kp A              &kp S            &kp D          &kp F         &kp G                                                    &kp TAB         &kp H              &kp J   &kp K         &kp L     &lt 5 MINUS
 &hrm LEFT_SHIFT Z  &hrm LEFT_ALT X  &kp C          &kp V         &kp B                    &lt 7 TAB                       &kp BACKSPACE   &kp N              &kp M   &lt 6 COMMA   &kp DOT   &mt RIGHT_SHIFT SLASH
-                                    &kp LEFT_GUI   &lt 4 LANG2   &mt LEFT_CONTROL SPACE   &mt LEFT_SHIFT ESCAPE           &lt 3 ENTER     &lt_kana_tab 2 0
+                                    &kp LEFT_GUI   &mt LEFT_CONTROL LANG2   &mt LEFT_SHIFT SPACE   &lt 4 ESCAPE           &lt 3 ENTER     &lt_kana_tab 2 0
             >;
 
             sensor-bindings = <&dax_enc_scroll>;

@@ -94,7 +94,7 @@ R に SPI0 + MOTION 割り込みで接続する。ドライバーは生の `INPU
   - `tb_pointer` はここでも先頭にいるので、その倍率はスクロールにも掛かる
 - **android_override**（Android レイヤー = 1、`process-next` 付き、**必ず最後に宣言する**）: WHEEL を反転するだけ
   - override は宣言順に評価される。Android レイヤーは常時アクティブなので、最後に置かないと Scroll を飲み込む
-- CPI は `res-cpi`（既定 1400）。範囲は 608〜4826
+- CPI は `res-cpi`（既定 1800）。範囲は 608〜4826
 
 エンコーダーのスクロールは `trackball_listener` ではなく `&msc_input_listener`（`daxs.keymap` の `android_encoder_override`）を通る。
 
@@ -126,7 +126,7 @@ Android レイヤーまわりで壊れやすい点:
 - **レイヤーの出入りは `&tog` / `&mo` で行い、`&to` は使わない。** 常時アクティブな上書きレイヤーを落とす恐れがある（dax6 でも実機未確認）
 - **Android レイヤーの `&kp HYPER` は、default_layer の `LEFT_GUI` と同じ位置に置く。** Android では GUI を単独で押すと検索やアシスタントが起動するので、Ctrl+Opt+Shift+Cmd の同時押しにして潰している。HYPER は位置で決まるので、default_layer で GUI を動かしたら HYPER も一緒に動かす
 
-`LCTRL` は左親指の `&mt LEFT_CONTROL SPACE` にある。
+`LCTRL` は左親指の `&mt LEFT_CONTROL LANG2` に、左親指の Shift は隣の `&mt LEFT_SHIFT SPACE` にある。
 
 ## 実行時設定（daxial）
 
