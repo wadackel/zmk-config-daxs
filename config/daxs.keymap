@@ -140,7 +140,9 @@
             tapping-term-ms = <200>;
             quick-tap-ms = <175>;
             require-prior-idle-ms = <150>;
-            flavor = "balanced";
+            // Not balanced: a roll like Z then I, with I released first, would
+            // turn "zi" into "I". The right hand's I rules out positional holds.
+            flavor = "tap-preferred";
         };
 
         // With Cmd held, the kana key becomes Tab, so holding Cmd and tapping it
