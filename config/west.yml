@@ -23,6 +23,6 @@ manifest:
       revision: e6b467792a1dabef8cfa5c9fd26bfefc9c16662b  # main as of 2026-07-09
     - name: zmk-dax-modules
       remote: wadackel
-      revision: 4751585588c33bc5e95b9e4ba854920d4ae7997d  # main as of 2026-10-20
+      revision: 05e098495a62eb52a82ca4317d74ad1a5866aa5c  # main as of 2026-11-21
   self:
     path: config

@@ -25,6 +25,10 @@ PR、main への push、手動実行のたびに GitHub Actions（`.github/workf
 - `just pristine` は `zephyr/` を丸ごと消すので、git 管理下の `zephyr/module.yml` も消える。実行後は `git checkout zephyr/module.yml` で戻す
 - `nix flake update` はしない。新しい nixpkgs は `python310` を持たず、zephyr-nix の評価が darwin で失敗する。Zephyr SDK は 0.17.0 固定（Zephyr 4.1 が想定する版）
 
+## 出荷
+
+変更はブランチを切って PR にし、CI が通ったらマージまで進める。`zmk-dax-modules` の変更も同じで、モジュールの PR を先にマージしてから、この repo の `config/west.yml` をそのコミットの SHA に上げる。設定だけを先にマージすると、CI は新しいオプションを持たない古いモジュールでビルドすることになる
+
 ## 書き込み
 
 右手側（central）は daxial の `pnpm flash <uf2>` で、bootloader キーを押さずに書き込める。キーボードが報告する名前と UF2 のファイル名の先頭が一致しないと何も送らない。再起動だけなら `pnpm flash --restart --keyboard daxs`。どちらも、書き込み済みのファームウェアに `dax_system`（`CONFIG_ZMK_DAX_SYSTEM_RPC`）が入っていることが前提で、シリアルポートを他のプログラムが掴んでいないこと。左手側は Studio を持たないので、従来どおり bootloader に入れて UF2 をコピーする。
@@ -97,6 +101,17 @@ R に SPI0 + MOTION 割り込みで接続する。ドライバーは生の `INPU
 - CPI は `res-cpi`（既定 1800）。範囲は 608〜4826
 
 エンコーダーのスクロールは `trackball_listener` ではなく `&msc_input_listener`（`daxs.keymap` の `android_encoder_override`）を通る。
+
+## スリープ
+
+- 右手側（central）は無操作 5 分で IDLE、1 時間で deep sleep に入る（`daxs_R.conf`）。USB 給電中は deep sleep に入らない（ZMK の仕様）
+- IDLE の間は、左右リンクの接続間隔を 7.5 ms から 30 ms に広げる（`zmk-dax-modules` の `CONFIG_ZMK_DAX_SPLIT_IDLE_CONN`）。右手側はこのリンクの central なので接続イベントを間引けず、7.5 ms のままだと何も打っていなくても右手側の待機電流の大半をこのリンクが使う
+- 操作が戻ると 7.5 ms に戻す。切り替わるまでの 0.2 秒ほどは左手のキーが最大 30 ms 遅れて届くので、左→右と素早く打つと順番が入れ替わりうる
+- 左手側（peripheral）は `CONFIG_ZMK_SLEEP` を切り、`CONFIG_ZMK_DAX_SPLIT_PERIPHERAL_SLEEP` で寝る。右手側とつながっている間は寝ず、接続が切れて 5 分たつと deep sleep に入る（USB 給電中は除く）
+  - ZMK 標準の sleep は左手側自身の入力しか数えない。トラックボールだけで使っていると左手側が先に寝て、右手側は左手側を探す scan（60 ms ごとに 30 ms 受信）を続けてしまう
+  - 左手側で `CONFIG_ZMK_SLEEP=y` に戻すと、`CONFIG_ZMK_DAX_SPLIT_PERIPHERAL_SLEEP` は依存を満たさず黙って無効になる（Kconfig の warning だけが出る）
+- deep sleep から起こせるのはキーだけ（kscan の `wakeup-source`）。両方寝たら左右それぞれでキーを押す。起こすのに押したキーは届かない
+- 左手側がいない間（電池切れ、電源オフ）は、右手側が scan し続ける。ZMK の split central の処理なので、この repo とモジュールからは変えられない
 
 ## レイヤー構成
 
@@ -174,4 +189,5 @@ daxial から変えられず、この repo に書くもの:
 - 全キーが上の位置番号どおりに反応すること（特に R の内側 2 キーと親指）
 - エンコーダーの `steps` / `triggers-per-rotation` が EC12E に合うこと
 - トラックボールの向きと CPI
+- スリープまわり（IDLE 中の接続間隔の切り替え、左手側が右手側に合わせて寝ること）
 - daxial の各画面が出ること（daxial の repo の `pnpm identify` と `pnpm test:device` で確かめられる。proto の一致は `pnpm check:proto <この repo>`）
