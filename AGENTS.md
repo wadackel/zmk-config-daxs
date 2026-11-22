@@ -31,7 +31,7 @@ PR、main への push、手動実行のたびに GitHub Actions（`.github/workf
 
 ## 書き込み
 
-右手側（central）は daxial の `pnpm flash <uf2>` で、bootloader キーを押さずに書き込める。キーボードが報告する名前と UF2 のファイル名の先頭が一致しないと何も送らない。再起動だけなら `pnpm flash --restart --keyboard daxs`。どちらも、書き込み済みのファームウェアに `dax_system`（`CONFIG_ZMK_DAX_SYSTEM_RPC`）が入っていることが前提で、シリアルポートを他のプログラムが掴んでいないこと。左手側は Studio を持たないので、従来どおり bootloader に入れて UF2 をコピーする。
+右手側（central）は daxial の `pnpm flash <uf2>` で、bootloader キーを押さずに書き込める。キーボードが報告する名前と UF2 のファイル名の先頭が一致しないと何も送らない。再起動だけなら `pnpm flash --restart --keyboard daxs`。どちらも、書き込み済みのファームウェアに `dax_system`（`CONFIG_ZMK_DAX_SYSTEM_RPC`）が入っていることが前提で、シリアルポートを他のプログラムが掴んでいないこと。右手側は 1 台でも usbmodem のポートを 2 つ出すので、そのままでは `Expected exactly one usbmodem port` で止まる。Studio に応答する方を `DAXIAL_PORT=<port> pnpm identify` で確かめ、`DAXIAL_PORT` を付けて実行する。左手側は Studio を持たないので、従来どおり bootloader に入れて UF2 をコピーする。
 
 ## ディレクトリ構造
 
@@ -147,7 +147,7 @@ S は `&ctrl_s`（mod-morph）で、Ctrl を押している間はマクロのス
 
 ## 実行時設定（daxial）
 
-`daxs_R` を USB でつなぎ、Chromium 系ブラウザで daxial を開く。`CONFIG_ZMK_STUDIO_LOCKING=n` なので unlock 操作は要らない。左右とも USB でつなぐとポートが 2 つ出るが、応答するのは右手側だけ。
+`daxs_R` を USB でつなぎ、Chromium 系ブラウザで daxial を開く。`CONFIG_ZMK_STUDIO_LOCKING=n` なので unlock 操作は要らない。右手側だけをつないでも usbmodem のポートが 2 つ出て、Studio に応答するのはそのうち 1 つだけ。
 
 | 画面 | 仕組み（custom subsystem の識別子） |
 |---|---|
