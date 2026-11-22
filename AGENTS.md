@@ -143,6 +143,8 @@ Android レイヤーまわりで壊れやすい点:
 
 `LCTRL` は左親指の `&mt LEFT_CONTROL LANG2` に、左親指の Shift は隣の `&mt LEFT_SHIFT SPACE` にある。
 
+S は `&ctrl_s`（mod-morph）で、Ctrl を押している間はマクロのスロット 1（`ctrl_s_lang2`）が英数、Ctrl+S の順に送る。日本語入力のままでも tmux の prefix（C-s）の次のキーが IME に入らないようにするため。マクロを `&macro_tap` に書き換えると、各キーを tap-ms のあいだ押し続けるので、prefix の直後に打ったキーが Ctrl+S より先にホストへ届く。
+
 ## 実行時設定（daxial）
 
 `daxs_R` を USB でつなぎ、Chromium 系ブラウザで daxial を開く。`CONFIG_ZMK_STUDIO_LOCKING=n` なので unlock 操作は要らない。左右とも USB でつなぐとポートが 2 つ出るが、応答するのは右手側だけ。
