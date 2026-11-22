@@ -112,6 +112,16 @@
             bindings = <&macro_tap>, <&kp ESCAPE &kp LANG2>;
             wait-ms = <15>;
         };
+
+        // Press and release, not &macro_tap: a tap holds each key for the tap-ms
+        // (30 by default) and the macro plays apart from the keys, so a key typed
+        // right after Ctrl+S, the tmux command after the prefix, would reach the
+        // host first. Press and release steps play with no wait.
+        ctrl_s_lang2 {
+            slot = <1>;
+            bindings = <&macro_press &kp LANG2>, <&macro_release &kp LANG2>,
+                       <&macro_press &kp LC(S)>, <&macro_release &kp LC(S)>;
+        };
     };
 
     // The dax_enc_* behaviors (zmk-dax-modules' dax,behavior-encoder) are the
@@ -156,6 +166,18 @@
             keep-mods = <(MOD_LGUI|MOD_RGUI)>;
         };
 
+        // With Ctrl held, S plays ctrl_s_lang2 (slot 1): 英数, then Ctrl+S, so a tmux
+        // prefix of C-s leaves the IME off for the next key. Ctrl is masked so the
+        // IME sees a bare 英数, and LC(S) carries its own Ctrl. Sending 英数 on every
+        // Ctrl hold instead would commit a composition at Ctrl+K and the like.
+        ctrl_s: ctrl_s {
+            compatible = "zmk,behavior-mod-morph";
+            display-name = "S / Lang2+Ctrl+S";
+            #binding-cells = <0>;
+            bindings = <&kp S>, <&dax_macro 1>;
+            mods = <(MOD_LCTL|MOD_RCTL)>;
+        };
+
         // The tap parameter is unused: kana_tab takes none.
         lt_kana_tab: lt_kana_tab {
             compatible = "zmk,behavior-hold-tap";
@@ -198,7 +220,7 @@
         default_layer {
             bindings = <
 &kp Q              &kp W            &kp E          &kp R         &kp T                                                                    &kp Y              &kp U   &kp I         &kp O     &kp P
-&kp A              &kp S            &kp D          &kp F         &kp G                                                    &kp TAB         &kp H              &kp J   &kp K         &kp L     &lt 5 MINUS
+&kp A              &ctrl_s          &kp D          &kp F         &kp G                                                    &kp TAB         &kp H              &kp J   &kp K         &kp L     &lt 5 MINUS
 &hrm LEFT_SHIFT Z  &hrm LEFT_ALT X  &kp C          &kp V         &kp B                    &lt 7 TAB                       &kp BACKSPACE   &kp N              &kp M   &lt 6 COMMA   &kp DOT   &mt RIGHT_SHIFT SLASH
                                     &kp LEFT_GUI   &mt LEFT_CONTROL LANG2   &mt LEFT_SHIFT SPACE   &lt 4 ESCAPE           &lt 3 ENTER     &lt_kana_tab 2 0
             >;
